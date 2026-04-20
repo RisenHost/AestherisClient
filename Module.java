@@ -65,3 +65,49 @@ public abstract class Module {
         return enabled;
     }
 }
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Module {
+    private final String name;
+    private final String description;
+    private final Category category;
+    private int keybind;
+    private boolean enabled;
+    
+    // This holds your custom settings (Range, Speed, etc.)
+    private final List<Object> settings = new ArrayList<>();
+
+    public Module(String name, String description, Category category, int keybind) {
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.keybind = keybind;
+        this.enabled = false;
+    }
+
+    public void addSetting(Object setting) {
+        this.settings.add(setting);
+    }
+
+    public List<Object> getSettings() {
+        return settings;
+    }
+
+    public void toggle() {
+        setEnabled(!enabled);
+    }
+
+    public void setEnabled(boolean enabled) {
+        if (this.enabled == enabled) return;
+        this.enabled = enabled;
+        if (enabled) onEnable();
+        else onDisable();
+    }
+
+    protected void onEnable() {}
+    protected void onDisable() {}
+
+    public String getName() { return name; }
+    public Category getCategory() { return category; }
+}
