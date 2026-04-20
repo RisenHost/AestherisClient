@@ -25,8 +25,9 @@ public final class ModuleManager {
     }
 
     public void init() {
-        // We will add your Combat hacks here in the next step!
-        register(new Fly());
+        // Registering your combat hacks so they can be controlled by the manager
+        register(new com.aetheris.client.module.impl.combat.AutoTotem());
+        register(new com.aetheris.client.module.impl.combat.TriggerBot());
     }
 
     public List<Module> getModules() {
