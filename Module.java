@@ -1,73 +1,37 @@
-import java.util.ArrayList;
-import java.util.List;
+package com.aetheris.client.module.impl.combat;
 
-/**
- * Base class for all client modules. 
- * Supports full manual configuration for Velaris/Prestige style setups.
- */
-public abstract class Module {
-    private final String name;
-    private final String description;
-    private final Category category;
-    private int keybind; // LWJGL keycode, -1 = unbound
-    private boolean enabled;
-    
-    // This holds your manual configurations (Sliders, Toggles, etc.)
-    private final List<Setting<?>> settings = new ArrayList<>();
+import com.aetheris.client.module.Category;
+import com.aetheris.client.module.Module;
+import com.aetheris.client.setting.BooleanSetting;
+import com.aetheris.client.setting.NumberSetting;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Items;
+import net.minecraft.screen.slot.SlotActionType;
+import java.util.Random;
 
-    public Module(String name, String description, Category category, int keybind) {
-        this.name = name;
-        this.description = description;
-        this.category = category;
-        this.keybind = keybind;
-        this.enabled = false;
+public class AutoTotem extends Module {
+
+    private final NumberSetting fastDelay = new NumberSetting("Fast Delay", 50.0, 0.0, 500.0);
+    private final NumberSetting fumbleDelay = new NumberSetting("Fumble Delay", 150.0, 0.0, 500.0);
+    private final NumberSetting fumbleChance = new NumberSetting("Fumble Chance", 15.0, 0.0, 100.0);
+    private final BooleanSetting autoOpenInv = new BooleanSetting("Auto Open Inv", true);
+    private final BooleanSetting autoClose = new BooleanSetting("Auto Close", true);
+
+    private final Random random = new Random();
+    private long nextActionTime = 0;
+    private boolean isSwapping = false;
+    private int targetTotemSlot = -1;
+
+    public AutoTotem() {
+        super("AutoTotem", "Pro Totem Replacement", Category.COMBAT, -1);
+        addSetting(fastDelay);
+        addSetting(fumbleDelay);
+        addSetting(fumbleChance);
+        addSetting(autoOpenInv);
+        addSetting(autoClose);
     }
 
-    // ---------- Setting Management (For Manual Config) ----------
-    
-    public void addSetting(Setting<?> setting) {
-        this.settings.add(setting);
-    }
-
-    public List<Setting<?>> getSettings() {
-        return settings;
-    }
-
-    // ---------- State Management ----------
-    
-    public void toggle() {
-        setEnabled(!enabled);
-    }
-
-    public void setEnabled(boolean enabled) {
-        if (this.enabled == enabled) return;
-        this.enabled = enabled;
-        if (enabled) {
-            onEnable();
-        } else {
-            onDisable();
-        }
-    }
-
-    // ---------- Lifecycle Hooks ----------
-    
-    /** Called when the module is enabled. Override to add behavior. */
-    protected void onEnable() {}
-
-    /** Called when the module is disabled. Override to add cleanup behavior. */
-    protected void onDisable() {}
-
-    // ---------- Getters & Setters ----------
-    
-    public String getName() { return name; }
-    
-    public String getDescription() { return description; }
-    
-    public Category getCategory() { return category; }
-    
-    public int getKeybind() { return keybind; }
-    
-    public void setKeybind(int keybind) { this.keybind = keybind; }
-    
-    public boolean isEnabled() { return enabled; }
+    // Your logic here remains the same as before...
+    // The key is that addSetting() now works because we updated Module.java!
 }
